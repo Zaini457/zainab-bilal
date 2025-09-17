@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToolNest | Interactive Tools Hub</title>
+<meta name="description" content="ToolNest is a fully interactive, attractive online hub for calculators, converters, AI utilities, and productivity tools.">
+<style>
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; background:#f0f2f5; color:#333; }
+header { background:#2a9df4; color:white; text-align:center; padding:30px 20px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+header h1 { margin:0; font-size:2.5rem; }
+header p { margin:10px 0 10px; font-size:1.2rem; }
+
+main { max-width:1100px; margin:20px auto; padding:20px; }
+
+.search-box { margin-bottom:20px; display:flex; gap:10px; }
+.search-box input { flex:1; padding:10px; border:1px solid #ddd; border-radius:8px; outline:none; font-size:1rem; }
+.search-box button { padding:10px 20px; border:none; border-radius:8px; background:#2a9df4; color:white; cursor:pointer; transition:0.2s; }
+.search-box button:hover { background:#1c7ac9; }
+
+.tools-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+.tool-card { background:white; border-radius:12px; padding:20px; text-align:center; box-shadow:0 6px 20px rgba(0,0,0,0.1); cursor:pointer; transition:0.3s; position:relative; }
+.tool-card:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.15); }
+.tool-card img { width:50px; height:50px; margin-bottom:10px; }
+.tool-card h3 { margin:10px 0 5px; color:#2a9df4; }
+.tool-card p { font-size:0.9rem; color:#555; }
+
+.tool-section { display:none; background:white; padding:25px; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.1); margin-top:30px; }
+.tool-section.active { display:block; animation:fadeIn 0.5s ease-in-out; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+.tool-section img { width:60px; height:60px; display:block; margin:0 auto 15px; }
+
+.tool-section label { display:block; margin:8px 0 4px; font-weight:bold; }
+.tool-section input, .tool-section select, .tool-section textarea, .tool-section button { padding:10px; margin:5px 0; width:100%; border:1px solid #ddd; border-radius:6px; }
+.tool-section button { background:#2a9df4; color:white; border:none; cursor:pointer; transition:0.2s; }
+.tool-section button:hover { background:#1c7ac9; }
+
+#result { margin-top:10px; font-weight:bold; color:#2a9df4; }
+
+footer { background:#222; color:#aaa; text-align:center; padding:15px; font-size:0.9rem; margin-top:40px; }
+.highlight { border:2px solid #ff9800; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ToolNest</h1>
+  <p>Interactive Tools Hub – Click or Search for Tools</p>
+</header>
+
+<main>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search for a tool..." onkeyup="searchTool()">
+    <button onclick="clearSearch()">Clear</button>
+  </div>
+
+  <div class="tools-grid">
+    <div class="tool-card" data-tool="bmi" onclick="openTool('bmi')">
+      <img src="https://img.icons8.com/color/96/000000/scale.png" alt="BMI">
+      <h3>BMI Calculator</h3>
+      <p>Calculate your Body Mass Index quickly.</p>
+    </div>
+    <div class="tool-card" data-tool="loan" onclick="openTool('loan')">
+      <img src="https://img.icons8.com/color/96/000000/money.png" alt="Loan">
+      <h3>Loan Calculator</h3>
+      <p>Compute monthly loan payments easily.</p>
+    </div>
+    <div class="tool-card" data-tool="currency" onclick="openTool('currency')">
+      <img src="https://img.icons8.com/color/96/000000/currency-exchange.png" alt="Currency">
+      <h3>Currency Converter</h3>
+      <p>Convert between USD, EUR, INR with demo rates.</p>
+    </div>
+    <div class="tool-card" data-tool="unit" onclick="openTool('unit')">
+      <img src="https://img.icons8.com/color/96/000000/measurement-tool.png" alt="Unit Converter">
+      <h3>Unit Converter</h3>
+      <p>Convert meters to cm or kg to grams.</p>
+    </div>
+    <div class="tool-card" data-tool="password" onclick="openTool('password')">
+      <img src="https://img.icons8.com/color/96/000000/password.png" alt="Password">
+      <h3>Password Generator</h3>
+      <p>Generate secure passwords instantly.</p>
+    </div>
+    <div class="tool-card" data-tool="ai" onclick="openTool('ai')">
+      <img src="https://img.icons8.com/color/96/000000/artificial-intelligence.png" alt="AI">
+      <h3>AI Text Summarizer</h3>
+      <p>Summarize long text with a click.</p>
+    </div>
+  </div>
+
+  <!-- Tool Sections -->
+  <div class="tool-section" id="bmi">
+    <label>Weight (kg)</label><input type="number" id="bmiWeight">
+    <label>Height (cm)</label><input type="number" id="bmiHeight">
+    <button onclick="calculateBMI()">Calculate BMI</button>
+    <div id="bmiResult"></div>
+  </div>
+
+  <div class="tool-section" id="loan">
+    <label>Loan Amount</label><input type="number" id="loanAmount">
+    <label>Annual Interest (%)</label><input type="number" id="loanInterest">
+    <label>Years</label><input type="number" id="loanYears">
+    <button onclick="calculateLoan()">Calculate Monthly Payment</button>
+    <div id="loanResult"></div>
+  </div>
+
+  <div class="tool-section" id="currency">
+    <label>Amount</label><input type="number" id="currencyAmount">
+    <label>From</label>
+    <select id="currencyFrom"><option value="USD">USD</option><option value="EUR">EUR</option><option value="INR">INR</option></select>
+    <label>To</label>
+    <select id="currencyTo"><option value="USD">USD</option><option value="EUR">EUR</option><option value="INR">INR</option></select>
+    <button onclick="convertCurrency()">Convert</button>
+    <div id="currencyResult"></div>
+  </div>
+
+  <div class="tool-section" id="unit">
+    <img src="https://img.icons8.com/color/96/000000/measurement-tool.png" alt="Unit Converter">
+    <label>Value</label><input type="number" id="unitValue">
+    <label>From</label><select id="unitFrom"><option value="m">Meters</option><option value="kg">Kilograms</option></select>
+    <label>To</label><select id="unitTo"><option value="cm">Centimeters</option><option value="g">Grams</option></select>
+    <button onclick="convertUnit()">Convert</button>
+    <div id="unitResult"></div>
+  </div>
+
+  <div class="tool-section" id="password">
+    <label>Password Length</label><input type="number" id="passLength" value="12">
+    <button onclick="generatePassword()">Generate Password</button>
+    <div id="passResult"></div>
+  </div>
+
+  <div class="tool-section" id="ai">
+    <label>Enter Text</label><textarea id="aiText" rows="4" style="width:100%;"></textarea>
+    <button onclick="summarizeText()">Summarize</button>
+    <div id="aiResult"></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>&copy; 2025 ZainabBilal. All rights reserved.</p>
+</footer>
+
+<script>
+function openTool(id){
+  document.querySelectorAll('.tool-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tool-card').forEach(c=>c.classList.remove('highlight'));
+  document.querySelector(`.tool-card[data-tool='${id}']`).classList.add('highlight');
+  window.scrollTo({top:document.getElementById(id).offsetTop-20, behavior:'smooth'});
+}
+
+// Live Search
+function searchTool(){
+  const input=document.getElementById('searchInput').value.toLowerCase();
+  let found=false;
+  document.querySelectorAll('.tool-card').forEach(card=>{
+    const name=card.querySelector('h3').innerText.toLowerCase();
+    if(name.includes(input)){
+      card.style.display="block";
+      if(!found){ openTool(card.dataset.tool); found=true; }
+    }else{ card.style.display="none"; }
+  });
+}
+
+function clearSearch(){
+  document.getElementById('searchInput').value="";
+  document.querySelectorAll('.tool-card').forEach(c=>c.style.display="block");
+  document.querySelectorAll('.tool-card').forEach(c=>c.classList.remove('highlight'));
+  document.querySelectorAll('.tool-section').forEach(s=>s.classList.remove('active'));
+}
+
+// BMI
+function calculateBMI(){
+  const w=parseFloat(document.getElementById('bmiWeight').value);
+  const h=parseFloat(document.getElementById('bmiHeight').value)/100;
+  document.getElementById('bmiResult').innerText=(w>0&&h>0)? "Your BMI: "+(w/(h*h)).toFixed(2) : "Enter valid numbers.";
+}
+
+// Loan
+function calculateLoan(){
+  const P=parseFloat(document.getElementById('loanAmount').value);
+  const r=parseFloat(document.getElementById('loanInterest').value)/100/12;
+  const n=parseFloat(document.getElementById('loanYears').value)*12;
+  document.getElementById('loanResult').innerText=(P>0&&r>=0&&n>0)? "Monthly Payment: $"+((P*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1)).toFixed(2) : "Enter valid numbers.";
+}
+
+// Currency
+function convertCurrency(){
+  const amount=parseFloat(document.getElementById('currencyAmount').value);
+  const from=document.getElementById('currencyFrom').value;
+  const to=document.getElementById('currencyTo').value;
+  const rates={USD:1,EUR:0.91,INR:83};
+  document.getElementById('currencyResult').innerText=(amount>0)? `${amount} ${from} = ${(amount/rates[from]*rates[to]).toFixed(2)} ${to}` : "Enter valid amount.";
+}
+
+// Unit
+function convertUnit(){
+  const val=parseFloat(document.getElementById('unitValue').value);
+  const from=document.getElementById('unitFrom').value;
+  const to=document.getElementById('unitTo').value;
+  let res=(from=="m"&&to=="cm")? val*100 : (from=="kg"&&to=="g")? val*1000 : "Conversion not supported.";
+  document.getElementById('unitResult').innerText=res;
+}
+
+// Password
+function generatePassword(){
+  const length=parseInt(document.getElementById('passLength').value);
+  const chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+  let pass=""; for(let i=0;i<length;i++){ pass+=chars.charAt(Math.floor(Math.random()*chars.length)); }
+  document.getElementById('passResult').innerText=pass;
+}
+
+// AI Summarizer
+function summarizeText(){
+  const text=document.getElementById('aiText').value;
+  if(text.length<10){ document.getElementById('aiResult').innerText="Enter more text."; return; }
+  const sentences=text.split('.').filter(s=>s.trim()!=="");
+  document.getElementById('aiResult').innerText=sentences.slice(0,Math.ceil(sentences.length/2)).join('. ') + ".";
+}
+</script>
+
+</body>
+</html>
